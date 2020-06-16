@@ -1,0 +1,15 @@
+---
+
+influxdb:
+  auth_method: basic_auth
+  username: telegraf
+  password: SnUjoaaHu_oXBePZ
+  database: openhab
+  time_precision: ns
+  hosts:
+    - hab.i.trombik.org
+mqtt:
+  host: hab.i.trombik.org
+log_level: INFO
+topics:
+  - "homie/A020A615E8E9/esp/uptime"
