@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "influxdb", "~> 0.5.0"
   spec.add_runtime_dependency "paho-mqtt", "~> 1.0.12"
+  spec.add_runtime_dependency "daemons", "~> 1.3.1"
 
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "guard"
