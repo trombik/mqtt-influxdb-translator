@@ -36,6 +36,15 @@ After checking out the repo, run `bin/setup` to install dependencies. Then,
 run `rake spec` to run the tests. You can also run `bin/console` for an
 interactive prompt that will allow you to experiment.
 
+### Remove retained `MQTT` topics
+
+During the development, you might need to remove obsolete, retained MQTT
+topics. Use `mqtt-forget` to remove topics.
+
+```console
+node_modules/mqtt-forget/index.js -u mqtt://mqtt.example.org -f -t 'homie/${MAC_ADDRESS}/#'
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
