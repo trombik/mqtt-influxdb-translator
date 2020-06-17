@@ -45,6 +45,20 @@ topics. Use `mqtt-forget` to remove topics.
 node_modules/mqtt-forget/index.js -u mqtt://mqtt.example.org -f -t 'homie/${MAC_ADDRESS}/#'
 ```
 
+### Remove `roomPing` device from `InfluxDB`
+
+Run `influx`
+
+```console
+influx -precision rfc3339 -database $MYDATABSE -username $USERNAME -password $PASSWORD -host influxdb.example.org
+```
+
+Run `InfluxQL` command.
+
+```console
+DELETE FROM esp WHERE mac_addr = '$MAC_ADDRESS'
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
