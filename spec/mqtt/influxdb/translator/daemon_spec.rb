@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
+require "pathname"
+require "yaml"
+
 RSpec.describe MQTT::InfluxDB::Translator::Daemon do
   let(:opts) do
-    {
-      "influxdb" => {
-        "hosts" => ["localhost"]
-      },
-      "mqtt" => {
-        "host" => "localhost"
-      },
-      "log_file" => "/dev/null"
-    }
+    YAML.safe_load(
+      File.read(Pathname.new(__FILE__).parent.parent.parent.parent +
+                "config/test.yml")
+    )
   end
   let(:obj) { MQTT::InfluxDB::Translator::Daemon.new(opts) }
   let(:topic) { "homie/A020A615E8E9/esp/signal" }
@@ -28,7 +26,7 @@ RSpec.describe MQTT::InfluxDB::Translator::Daemon do
     # esp,mac_addr=A020A615E8E9,signal=36 1592277621000000000
 
     it "translate MQTT value to a list of name and data" do
-      name, data = obj.translate(topic, value, now)
+      name, data = obj.translate(nil, topic, value, now)
       expect(name).to eq "esp"
       expect(data[:values].key?("signal")).to be true
       expect(data[:values]["signal"]).to eq 36

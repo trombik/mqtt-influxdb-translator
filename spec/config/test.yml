@@ -1,0 +1,36 @@
+---
+
+influxdb:
+  auth_method: basic_auth
+  username: user
+  password: password
+  database: mydatabase
+  time_precision: ns
+  hosts:
+    - influxdb.example.org
+mqtt:
+  host: test.mosquitto.org
+log_level: DEBUG
+log_file: /dev/null
+topics:
+  - "homie/A020A615E8E9/esp/uptime"
+translate: |
+  # the translation logic, will be executed with ruby's `eval`.
+  #
+  # Available variables:
+  #
+  # * client, MQTT::Client instance
+  # * topic, MQTT topic string
+  # * value, value of the topic
+  # * timestamp, nano sec when the value is fetched
+  #
+  # this ruby fragment must return a list of `name` and `data`.
+  # they are arguments for InfluxDB#write_point. See
+  # https://github.com/influxdata/influxdb-ruby
+  (_dummy, mac_addr, node_name, attribute_name) = topic.split("/")
+  data = {
+    values: { attribute_name => value },
+    tags: { mac_addr: mac_addr },
+    timestamp: timestamp
+  }
+  return [node_name, data]
