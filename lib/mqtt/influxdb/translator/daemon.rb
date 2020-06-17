@@ -27,7 +27,7 @@ module MQTT
             log(:debug, "Subscribing to %<topics>s", topics: @opts["topics"])
             c.subscribe(@opts["topics"])
             c.get do |topic, msg|
-              write(topic, msg, now_in_nano_sec)
+              write(c, topic, msg, now_in_nano_sec)
             end
           end
         end
@@ -39,9 +39,9 @@ module MQTT
                                         .transform_keys(&:to_sym))
         end
 
-        def write(topic, value, timestamp)
-          node_name, data = translate(topic, value, timestamp)
-          write_point(node_name, data)
+        def write(client, topic, value, timestamp)
+          name, data = translate(client, topic, value, timestamp)
+          write_point(name, data)
         end
 
         def write_point(name, data)
@@ -60,14 +60,20 @@ module MQTT
           now.to_i
         end
 
-        def translate(topic, value, timestamp)
-          (_dummy, mac_addr, node_name, attribute_name) = topic.split("/")
-          data = {
-            values: { attribute_name => value },
-            tags: { mac_addr: mac_addr },
-            timestamp: timestamp
-          }
-          [node_name, data]
+        def translate(client, topic, value, timestamp)
+          log(:debug,
+              "topic: %<topic>s value: %<value>s timestamp: %<timestamp>s",
+              topic: topic, value: value, timestamp: timestamp)
+          result = [nil, nil]
+          begin
+            # rubocop:disable Security/Eval
+            result = eval(@opts["translate"])
+            # rubocop:enable Security/Eval
+          rescue StandardError => e
+            log(:error, "Failed to eval translate: %<err>s\n%<backtrace>s",
+                err: e, backtrace: e.backtrace)
+          end
+          result
         end
       end
 
