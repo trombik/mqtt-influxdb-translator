@@ -62,16 +62,15 @@ module MQTT
 
         def translate(client, topic, value, timestamp)
           log(:debug,
-              "topic: %<topic>s value: %<value>s timestamp: %<timestamp>s",
-              topic: topic, value: value, timestamp: timestamp)
+              "%<client>s %<topic>s %<value>s %<timestamp>s",
+              client: client, topic: topic, value: value, timestamp: timestamp)
           result = [nil, nil]
           begin
             # rubocop:disable Security/Eval
             result = eval(@opts["translate"])
             # rubocop:enable Security/Eval
           rescue StandardError => e
-            log(:error, "Failed to eval translate: %<err>s\n%<backtrace>s",
-                err: e, backtrace: e.backtrace)
+            log(:error, e.to_s + "\n" + e.backtrace)
           end
           result
         end
