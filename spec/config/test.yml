@@ -8,8 +8,12 @@ influxdb:
   time_precision: ns
   hosts:
     - influxdb.example.org
-mqtt:
-  host: test.mosquitto.org
+paho-mqtt:
+  host: hab.i.trombik.org
+  ssl: false
+  reconnect_delay: 10
+  client_id: mqtt-influxdb-translator
+  persistent: true
 log_level: DEBUG
 log_file: /dev/null
 topics:
