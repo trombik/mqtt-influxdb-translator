@@ -26,7 +26,7 @@ RSpec.describe MQTT::InfluxDB::Translator::Daemon do
     # esp,mac_addr=A020A615E8E9,signal=36 1592277621000000000
 
     it "translate MQTT value to a list of name and data" do
-      name, data = obj.translate(nil, topic, value, now)
+      name, data = obj.translate(topic, value, now)
       expect(name).to eq "esp"
       expect(data[:values].key?("signal")).to be true
       expect(data[:values]["signal"]).to eq 36

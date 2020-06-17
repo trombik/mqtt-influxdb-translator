@@ -2,7 +2,7 @@
 
 require "mqtt/influxdb/translator/version"
 require "logger"
-require "mqtt"
+require "paho-mqtt"
 require "influxdb"
 
 module MQTT
@@ -17,18 +17,26 @@ module MQTT
           @logger.progname = self.class
           log(:info, "version %<version>s",
               version: MQTT::InfluxDB::Translator::VERSION)
+          @mqtt = PahoMqtt::Client.new(@opts["paho-mqtt"])
         end
 
         def start
           connect_influxdb
-          log(:info, "Connecting to MQTT server", "")
-          log(:debug, "mqtt: `%<mqtt>s`", mqtt: @opts["mqtt"])
-          MQTT::Client.connect(@opts["mqtt"].transform_keys(&:to_sym)) do |c|
-            log(:debug, "Subscribing to %<topics>s", topics: @opts["topics"])
-            c.subscribe(@opts["topics"])
-            c.get do |topic, msg|
-              write(c, topic, msg, now_in_nano_sec)
-            end
+          register_mqtt_callback
+          @mqtt.connect(@mqtt.host, @mqtt.port,
+                        @mqtt.keep_alive,
+                        @mqtt.persistent,
+                        false)
+          @mqtt.subscribe(@opts["topics"])
+          loop { sleep 0.01 }
+        end
+
+        def register_mqtt_callback
+          @mqtt.on_connack = proc do
+            log(:info, "Connected to MQTT broaker", "")
+          end
+          @mqtt.on_message do |packet|
+            write(packet.topic, packet.payload, now_in_nano_sec)
           end
         end
 
@@ -39,8 +47,8 @@ module MQTT
                                         .transform_keys(&:to_sym))
         end
 
-        def write(client, topic, value, timestamp)
-          name, data = translate(client, topic, value, timestamp)
+        def write(topic, value, timestamp)
+          name, data = translate(topic, value, timestamp)
           write_point(name, data)
         end
 
@@ -60,10 +68,10 @@ module MQTT
           now.to_i
         end
 
-        def translate(client, topic, value, timestamp)
+        def translate(topic, value, timestamp)
           log(:debug,
-              "%<client>s %<topic>s %<value>s %<timestamp>s",
-              client: client, topic: topic, value: value, timestamp: timestamp)
+              "%<topic>s %<value>s %<timestamp>s",
+              topic: topic, value: value, timestamp: timestamp)
           result = [nil, nil]
           begin
             # rubocop:disable Security/Eval
