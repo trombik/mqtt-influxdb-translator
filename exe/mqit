@@ -17,7 +17,7 @@ Dir.chdir(ENV["PWD"]) do
              "/"
            end
   config_path = ARGV[0] || Pathname.new(prefix) + \
-                           "etc/mqtt-influx-translator/config.yml"
+                           "etc/mqit/config.yml"
   config = YAML.safe_load(File.read(config_path))
 end
 
