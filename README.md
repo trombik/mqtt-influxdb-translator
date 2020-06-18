@@ -12,11 +12,15 @@ gem 'mqtt-influxdb-translator'
 
 And then execute:
 
-    $ bundle
+```console
+> bundle
+```
 
 Or install it yourself as:
 
-    $ gem install mqtt-influxdb-translator
+```console
+> gem install mqtt-influxdb-translator
+```
 
 ## Configuration
 
@@ -103,6 +107,7 @@ To start the daemon, run:
 ```console
 bundle exec ruby exe/appctl.rb start -- /path/to/config.yml
 ```
+
 To stop the daemon, run:
 
 ```console
@@ -147,7 +152,7 @@ DELETE FROM esp WHERE mac_addr = '$MAC_ADDRESS'
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
-https://github.com/trombik/mqtt-influxdb-translator.
+[https://github.com/trombik/mqtt-influxdb-translator](https://github.com/trombik/mqtt-influxdb-translator).
 
 ## License
 
