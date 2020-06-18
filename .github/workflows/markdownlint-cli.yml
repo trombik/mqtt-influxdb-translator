@@ -3,6 +3,7 @@ name: Run markdownlint-cli
 
 on:
   - push
+  - pull_request
 
 jobs:
   markdownlint-cli:
