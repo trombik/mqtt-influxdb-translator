@@ -3,6 +3,7 @@ name: Run yamllint
 
 on:
   - push
+  - pull_request
 
 jobs:
   yamllint:
