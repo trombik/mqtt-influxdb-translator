@@ -8,7 +8,7 @@ require "deep_merge"
 require "mqtt/influxdb/translator/version"
 
 command = ARGV.first
-app_name = "mqtt-influxdb-translator"
+app_name = "mqit"
 
 # XXX do not assume "/etc"
 prefix = case Gem::Platform.local.os
@@ -44,4 +44,4 @@ opts = {
   ontop: !config["daemons"]["daemonize"]
 }
 
-Daemons.run(Pathname.new(__FILE__).dirname + "app.rb", opts)
+Daemons.run(Pathname.new(__FILE__).dirname + "mqit", opts)
