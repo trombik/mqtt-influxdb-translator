@@ -105,13 +105,13 @@ The ruby code to translate MQTT topic and value. Available variables are:
 To start the daemon, run:
 
 ```console
-bundle exec ruby exe/appctl.rb start -- /path/to/config.yml
+bundle exec ruby exe/mqitctl start -- /path/to/config.yml
 ```
 
 To stop the daemon, run:
 
 ```console
-bundle exec ruby exe/appctl.rb stop -- /path/to/config.yml
+bundle exec ruby exe/mqitctl stop -- /path/to/config.yml
 ```
 
 ## Development
