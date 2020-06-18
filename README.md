@@ -7,19 +7,13 @@ Translate values of subscribed MQTT topics, write values to InfluxDB database.
 Add this line to your application's `Gemfile`:
 
 ```ruby
-gem 'mqtt-influxdb-translator'
+gem "mqtt-influxdb-translator", git: "https://github.com/trombik/mqtt-influxdb-translator.git", branch: "master"
 ```
 
 And then execute:
 
 ```console
 > bundle
-```
-
-Or install it yourself as:
-
-```console
-> gem install mqtt-influxdb-translator
 ```
 
 ## Configuration
