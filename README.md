@@ -2,6 +2,15 @@
 
 Translate values of subscribed MQTT topics, write values to InfluxDB database.
 
+## Features
+
+- Translate published values of MQTT topics with ruby, write the translated
+  data to `InfluxDB`.
+
+## Not implemented (yet)
+
+- Startup scripts
+
 ## Installation
 
 Add this line to your application's `Gemfile`:
