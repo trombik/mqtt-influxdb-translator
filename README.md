@@ -6,6 +6,8 @@ Translate values of subscribed MQTT topics, write values to InfluxDB database.
 
 - Translate published values of MQTT topics with ruby, write the translated
   data to `InfluxDB`.
+- Include arbitrary values of other MQTT topics in the `InfluxDB` record (see
+  `lookup_translate` and `lookup_topics`)
 
 ## Not implemented (yet)
 
