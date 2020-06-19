@@ -10,7 +10,8 @@ module MQTT
     module Translator
       # The translate daemon
       class Daemon
-        attr_accessor :pid, :influxdb, :opts
+        attr_accessor :influxdb, :opts
+        attr_reader :lookup
         def initialize(opts)
           @opts = opts
           @logger = Logger.new(@opts["log_file"] || STDOUT)
@@ -18,6 +19,7 @@ module MQTT
           log(:info, "version %<version>s",
               version: MQTT::InfluxDB::Translator::VERSION)
           @mqtt = PahoMqtt::Client.new(@opts["paho-mqtt"])
+          @lookup = {}
         end
 
         def start
@@ -27,7 +29,7 @@ module MQTT
                         @mqtt.keep_alive,
                         @mqtt.persistent,
                         false)
-          @mqtt.subscribe(@opts["topics"])
+          @mqtt.subscribe(@opts["topics"] + @opts["lookup_topics"])
           loop { sleep 0.01 }
         end
 
@@ -36,8 +38,19 @@ module MQTT
             log(:info, "Connected to MQTT broaker", "")
           end
           @mqtt.on_message do |packet|
-            write(packet.topic, packet.payload, now_in_nano_sec)
+            if lookup_topic?(packet.topic)
+              lookup_translate(packet.topic, packet.payload, now_in_nano_sec)
+            else
+              write(packet.topic, packet.payload, now_in_nano_sec)
+            end
           end
+        end
+
+        def lookup_topic?(topic)
+          @opts["lookup_topics"].map(&:first).each do |lookup_topic|
+            return true if topic =~ /#{topic_pattern_to_regex(lookup_topic)}/
+          end
+          false
         end
 
         def connect_influxdb
@@ -78,9 +91,26 @@ module MQTT
             result = eval(@opts["translate"])
             # rubocop:enable Security/Eval
           rescue StandardError => e
-            log(:error, e.to_s + "\n" + e.backtrace)
+            log(:error, "%s", e.to_s + "\n" + e.backtrace.to_s)
           end
           result
+        end
+
+        def lookup_translate(topic, value, timestamp)
+          log(:debug,
+              "%<topic>s %<value>s %<timestamp>s",
+              topic: topic, value: value, timestamp: timestamp)
+          # rubocop:disable Security/Eval
+          eval(@opts["lookup_translate"])
+          # rubocop:enable Security/Eval
+        rescue StandardError => e
+          log(:error, "%s", e.to_s + "\n" + e.backtrace.to_s)
+        end
+
+        def topic_pattern_to_regex(pattern)
+          single = "[^/]+"
+          multiple = "[\\p{Alphabetic}\\p{Number}/]+"
+          pattern.gsub(/#/, multiple).gsub(/\+/, single)
         end
       end
 
