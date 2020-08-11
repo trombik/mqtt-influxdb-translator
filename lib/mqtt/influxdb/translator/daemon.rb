@@ -63,6 +63,8 @@ module MQTT
         def write(topic, value, timestamp)
           name, data = translate(topic, value, timestamp)
           write_point(name, data)
+        rescue StandardError => e
+          log(:error, "%s", e.to_s + "\n" + e.backtrace.to_s)
         end
 
         def write_point(name, data)
