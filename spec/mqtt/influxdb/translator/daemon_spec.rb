@@ -124,4 +124,12 @@ RSpec.describe MQTT::InfluxDB::Translator::Daemon do
       expect(data[:timestamp]).to eq now
     end
   end
+
+  describe "#write" do
+    it "rescues when write_point fails" do
+      allow(obj).to receive(:write_point).and_raise(StandardError)
+
+      expect { obj.write("foo", 1, now) }.not_to raise_error
+    end
+  end
 end
