@@ -25,12 +25,23 @@ module MQTT
         def start
           connect_influxdb
           register_mqtt_callback
+          configure_ssl_context
           @mqtt.connect(@mqtt.host, @mqtt.port,
                         @mqtt.keep_alive,
                         @mqtt.persistent,
                         false)
           @mqtt.subscribe(@opts["topics"] + @opts["lookup_topics"])
           loop { sleep 0.01 }
+        end
+
+        def configure_ssl_context
+          if !@opts["paho-mqtt"].key?("ssl") || !@opts["paho-mqtt"]["ssl"]
+            return
+          end
+
+          context = OpenSSL::SSL::SSLContext.new
+          context.verify_mode = OpenSSL::SSL::VERIFY_NONE
+          @mqtt.ssl_context = context
         end
 
         def register_mqtt_callback
