@@ -1,3 +1,10 @@
+GIT
+  remote: git@github.com:trombik/paho.mqtt.ruby.git
+  revision: 31544931943e312447555a7b64cb89c77b32cb2d
+  branch: ssl_context
+  specs:
+    paho-mqtt (1.0.12)
+
 PATH
   remote: .
   specs:
@@ -42,7 +49,6 @@ GEM
     notiffany (0.1.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
-    paho-mqtt (1.0.12)
     parallel (1.19.1)
     parser (2.7.1.3)
       ast (~> 2.4.0)
@@ -89,6 +95,7 @@ DEPENDENCIES
   guard
   guard-rspec
   mqtt-influxdb-translator!
+  paho-mqtt!
   rake (~> 13.0)
   rspec (~> 3.0)
   rubocop (~> 0.82.0)
