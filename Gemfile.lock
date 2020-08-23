@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:trombik/paho.mqtt.ruby.git
+  remote: https://github.com/trombik/paho.mqtt.ruby.git
   revision: 31544931943e312447555a7b64cb89c77b32cb2d
   branch: ssl_context
   specs:
